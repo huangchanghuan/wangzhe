@@ -1,0 +1,5 @@
+/.idea/
+target/
+*.iml
+logs
+/simipass-business-module/simipass-ecpass/src/main/resources/mappers/.idea/
