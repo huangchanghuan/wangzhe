@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="40" viewBox="0 0 200 40">
+  <style>
+    .title { font: bold 24px Arial; fill: #f8c01c; }
+    .subtitle { font: 16px Arial; fill: #ffffff; }
+  </style>
+  <rect width="200" height="40" fill="#0a0e2a" rx="5" ry="5"/>
+  <text x="10" y="28" class="title">王者荣耀</text>
+  <text x="120" y="28" class="subtitle">排行榜</text>
+</svg>

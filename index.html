@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>王者荣耀排行榜</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <!-- 导航栏 -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <img src="https://game.gtimg.cn/images/yxzj/web201706/images/comm/logo.png" alt="王者荣耀" height="40">
+                    王者荣耀排行榜
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#hero-rank">英雄排行</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#player-rank">玩家排行</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#team-rank">战队排行</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 头部横幅 -->
+        <div class="hero-banner">
+            <div class="container text-center text-white py-5">
+                <h1 class="display-4 fw-bold">王者荣耀官方排行榜</h1>
+                <p class="lead">实时更新最新英雄数据与玩家排名</p>
+            </div>
+        </div>
+
+        <!-- 主要内容 -->
+        <div class="container my-5">
+            <header>
+                <h1>英雄排行榜</h1>
+            </header>
+            
+            <!-- 数据报表区域 -->
+            <section id="dashboards" class="mb-5">
+                <div class="row">
+                    <!-- 胜率分布报表 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card dashboard-card">
+                            <div class="card-header">
+                                <h3 class="mb-0">英雄胜率分布</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="dashboard-content">
+                                    <canvas id="win-rate-chart" width="400" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 出场率分析报表 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card dashboard-card">
+                            <div class="card-header">
+                                <h3 class="mb-0">出场率分析</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="dashboard-content">
+                                    <canvas id="pick-rate-chart" width="400" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 英雄职业分布报表 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card dashboard-card">
+                            <div class="card-header">
+                                <h3 class="mb-0">职业分布</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="dashboard-content">
+                                    <canvas id="role-distribution-chart" width="400" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 热度趋势报表 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card dashboard-card">
+                            <div class="card-header">
+                                <h3 class="mb-0">热度趋势</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="dashboard-content">
+                                    <canvas id="popularity-chart" width="400" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 英雄排行榜 -->
+            <section id="hero-rank" class="mb-5">
+                <div class="card rank-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">英雄排行榜</h2>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-primary active" data-role="all">全部</button>
+                            <button type="button" class="btn btn-outline-primary" data-role="tank">坦克</button>
+                            <button type="button" class="btn btn-outline-primary" data-role="warrior">战士</button>
+                            <button type="button" class="btn btn-outline-primary" data-role="assassin">刺客</button>
+                            <button type="button" class="btn btn-outline-primary" data-role="mage">法师</button>
+                            <button type="button" class="btn btn-outline-primary" data-role="marksman">射手</button>
+                            <button type="button" class="btn btn-outline-primary" data-role="support">辅助</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="hero-table">
+                                <thead>
+                                    <tr>
+                                        <th>排名</th>
+                                        <th>英雄</th>
+                                        <th>位置</th>
+                                        <th>胜率</th>
+                                        <th>出场率</th>
+                                        <th>禁用率</th>
+                                        <th>热度</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="hero-list">
+                                    <!-- 英雄数据将通过JavaScript动态加载 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 玩家排行榜 -->
+            <section id="player-rank" class="mb-5">
+                <div class="card rank-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">玩家排行榜</h2>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-primary active" data-server="all">全部服务器</button>
+                            <button type="button" class="btn btn-outline-primary" data-server="ios">iOS</button>
+                            <button type="button" class="btn btn-outline-primary" data-server="android">安卓</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="player-table">
+                                <thead>
+                                    <tr>
+                                        <th>排名</th>
+                                        <th>玩家</th>
+                                        <th>段位</th>
+                                        <th>战力</th>
+                                        <th>胜率</th>
+                                        <th>常用英雄</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="player-list">
+                                    <!-- 玩家数据将通过JavaScript动态加载 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 战队排行榜 -->
+            <section id="team-rank">
+                <div class="card rank-card">
+                    <div class="card-header">
+                        <h2 class="mb-0">战队排行榜</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="team-table">
+                                <thead>
+                                    <tr>
+                                        <th>排名</th>
+                                        <th>战队</th>
+                                        <th>成员数</th>
+                                        <th>平均战力</th>
+                                        <th>战队荣誉</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="team-list">
+                                    <!-- 战队数据将通过JavaScript动态加载 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="footer py-4">
+            <div class="container text-center">
+                <p>© 2023 王者荣耀排行榜 - 非官方数据统计</p>
+                <p class="small">数据来源于网络，仅供参考，每日更新</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
